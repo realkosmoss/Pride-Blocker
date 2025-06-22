@@ -1,6 +1,6 @@
 const BLOCKED_KEYWORDS = [
-  "pride", "gay", "lesbian", "lgbt", "lgbtq", "lgbtq+", "queer",
-  "transgender", "trans", "bisexual", "homosexual", "nonbinary", "non-binary",
+  "pride", "gay", "lesbian", "lgbt", "lgbtq", "lgbtqia", "queer",
+  "transgender", "trans", "transsexual", "bisexual", "homosexual", "nonbinary", "non-binary",
   "pansexual", "asexual", "intersex", "genderfluid", "genderqueer", "agender",
   "bigender", "demiboy", "demigirl", "demisexual", "androgyne", "genderflux",
   "genderfae", "genderneutral", "neutrois", "omnisexual", "polysexual",
