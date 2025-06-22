@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Whitelist Manager</title>
+  <style>
+    :root {
+      --bg: #1e1e2f;
+      --card: #2c2c3c;
+      --accent: #4fc1ff;
+      --text: #ffffff;
+      --danger: #ff5c5c;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 16px;
+      width: 320px;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      text-align: center;
+      font-size: 1.2em;
+      color: var(--accent);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px;
+    }
+
+    li {
+      background: var(--card);
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85em;
+    }
+
+    .site-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+      flex-grow: 1;
+    }
+
+    .remove-btn {
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.7em;
+      cursor: pointer;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    .remove-btn:hover {
+      background: #e04848;
+    }
+
+    #addSiteBtn {
+      width: 100%;
+      padding: 10px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95em;
+    }
+
+    #addSiteBtn:hover {
+      background: #38a8e6;
+    }
+
+    #statusMsg {
+      margin-top: 10px;
+      font-size: 0.8em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h3>Whitelist Manager</h3>
+  <ul id="whitelist"></ul>
+  <button id="addSiteBtn">Whitelist This Site</button>
+  <div id="statusMsg"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
