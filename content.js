@@ -105,19 +105,19 @@ function runFilter(root = document.body) {
   if (domain !== lastDomain) {
     lastDomain = domain;
 
-        chrome.storage.local.get('whitelistedSites', (result) => {
-      if (chrome.runtime.lastError) {
+    chrome.storage.local.get('whitelistedSites', (result) => {
+      if (chrome.runtime.lastError || !isContextValid) {
         return;
       }
       const list = result.whitelistedSites || [];
       isWhitelisted = list.includes(domain);
 
-      if (!isWhitelisted && isContextValid) {
+      if (!isWhitelisted && isContextValid && document.body) {
         try {
           removeBlockedElements(document.body);
           censorBlockedText(document.body);
-        } catch {
-          return;
+        } catch (err) {
+          console.warn('Error running filter:', err);
         }
       }
     });
@@ -129,8 +129,8 @@ function runFilter(root = document.body) {
   try {
     removeBlockedElements(root);
     censorBlockedText(root);
-  } catch {
-    return;
+  } catch (err) {
+    console.warn('Error running filter:', err);
   }
 }
 
