@@ -87,22 +87,30 @@ function debounce(func, wait) {
 
 let lastDomain = null;
 let isWhitelisted = false;
+let isContextValid = true;  // NEW FLAG to track context validity
 
-function runFilter(root = document.body) {
+async function runFilter(root = document.body) {
+  if (!isContextValid) return; // bail if context invalidated
+
   if (!root) return;
   const domain = getDomain();
   if (!domain) return;
 
   if (domain !== lastDomain) {
     lastDomain = domain;
-    chrome.storage.local.get('whitelistedSites', (result) => {
+    try {
+      const result = await chrome.storage.local.get('whitelistedSites');
       const list = result.whitelistedSites || [];
       isWhitelisted = list.includes(domain);
+
       if (!isWhitelisted) {
         removeBlockedElements(document.body);
         censorBlockedText(document.body);
       }
-    });
+    } catch (e) {
+      // Might fail if context invalidated, just log safely
+      console.warn('Error accessing storage:', e);
+    }
     return;
   }
 
@@ -112,7 +120,7 @@ function runFilter(root = document.body) {
   censorBlockedText(root);
 }
 
-const debouncedRunFilter = debounce(runFilter, 400);
+const debouncedRunFilter = debounce(runFilter, 1500);
 
 function observeMutations() {
   const observer = new MutationObserver(mutations => {
@@ -136,16 +144,20 @@ function observeMutations() {
     subtree: true,
     characterData: true
   });
+
+  return observer;
 }
+
+let mutationObserver;
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     runFilter();
-    observeMutations();
+    mutationObserver = observeMutations();
   });
 } else {
   runFilter();
-  observeMutations();
+  mutationObserver = observeMutations();
 }
 
 (function() {
@@ -187,4 +199,18 @@ if (document.readyState === "loading") {
       onUrlChange();
     }
   }, 1000);
+
+  if (chrome.runtime && chrome.runtime.onSuspend) {
+    chrome.runtime.onSuspend.addListener(() => {
+      isContextValid = false;
+      if (mutationObserver) mutationObserver.disconnect();
+    });
+  }
+
+  window.addEventListener('error', e => {
+    if (e.message && e.message.includes('Extension context invalidated')) {
+      e.preventDefault();
+      console.warn('Suppressed Extension context invalidated error');
+    }
+  });
 })();
