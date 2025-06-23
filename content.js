@@ -105,9 +105,8 @@ function runFilter(root = document.body) {
   if (domain !== lastDomain) {
     lastDomain = domain;
 
-    chrome.storage.local.get('whitelistedSites', (result) => {
+        chrome.storage.local.get('whitelistedSites', (result) => {
       if (chrome.runtime.lastError) {
-        console.warn('Storage access error:', chrome.runtime.lastError);
         return;
       }
       const list = result.whitelistedSites || [];
@@ -117,7 +116,7 @@ function runFilter(root = document.body) {
         try {
           removeBlockedElements(document.body);
           censorBlockedText(document.body);
-        } catch (err) {
+        } catch {
           console.warn('Error running filter:', err);
         }
       }
