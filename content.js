@@ -116,7 +116,7 @@ function runFilter(root = document.body) {
         try {
           removeBlockedElements(document.body);
           censorBlockedText(document.body);
-        } catch {
+        } catch (err) {
           console.warn('Error running filter:', err);
         }
       }
