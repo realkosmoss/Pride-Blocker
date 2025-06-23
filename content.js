@@ -65,7 +65,9 @@ function censorBlockedText(root) {
 
   let node;
   while (node = walker.nextNode()) {
-    node.nodeValue = node.nodeValue.replace(blockedRegexGlobal, '[removed]');
+    try {
+      node.nodeValue = node.nodeValue.replace(blockedRegexGlobal, '[removed]');
+    } catch {}
   }
 }
 
@@ -87,10 +89,14 @@ function debounce(func, wait) {
 
 let lastDomain = null;
 let isWhitelisted = false;
-let isContextValid = true;  // NEW FLAG to track context validity
+let isContextValid = true;
 
-async function runFilter(root = document.body) {
-  if (!isContextValid) return; // bail if context invalidated
+window.addEventListener('beforeunload', () => {
+  isContextValid = false;
+});
+
+function runFilter(root = document.body) {
+  if (!isContextValid) return;
 
   if (!root) return;
   const domain = getDomain();
@@ -98,26 +104,35 @@ async function runFilter(root = document.body) {
 
   if (domain !== lastDomain) {
     lastDomain = domain;
-    try {
-      const result = await chrome.storage.local.get('whitelistedSites');
+
+    chrome.storage.local.get('whitelistedSites', (result) => {
+      if (chrome.runtime.lastError) {
+        console.warn('Storage access error:', chrome.runtime.lastError);
+        return;
+      }
       const list = result.whitelistedSites || [];
       isWhitelisted = list.includes(domain);
 
-      if (!isWhitelisted) {
-        removeBlockedElements(document.body);
-        censorBlockedText(document.body);
+      if (!isWhitelisted && isContextValid) {
+        try {
+          removeBlockedElements(document.body);
+          censorBlockedText(document.body);
+        } catch (err) {
+          console.warn('Error running filter:', err);
+        }
       }
-    } catch (e) {
-      // Might fail if context invalidated, just log safely
-      console.warn('Error accessing storage:', e);
-    }
+    });
     return;
   }
 
   if (isWhitelisted) return;
 
-  removeBlockedElements(root);
-  censorBlockedText(root);
+  try {
+    removeBlockedElements(root);
+    censorBlockedText(root);
+  } catch (err) {
+    console.warn('Error running filter:', err);
+  }
 }
 
 const debouncedRunFilter = debounce(runFilter, 1500);
@@ -144,20 +159,16 @@ function observeMutations() {
     subtree: true,
     characterData: true
   });
-
-  return observer;
 }
-
-let mutationObserver;
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     runFilter();
-    mutationObserver = observeMutations();
+    observeMutations();
   });
 } else {
   runFilter();
-  mutationObserver = observeMutations();
+  observeMutations();
 }
 
 (function() {
@@ -199,18 +210,4 @@ if (document.readyState === "loading") {
       onUrlChange();
     }
   }, 1000);
-
-  if (chrome.runtime && chrome.runtime.onSuspend) {
-    chrome.runtime.onSuspend.addListener(() => {
-      isContextValid = false;
-      if (mutationObserver) mutationObserver.disconnect();
-    });
-  }
-
-  window.addEventListener('error', e => {
-    if (e.message && e.message.includes('Extension context invalidated')) {
-      e.preventDefault();
-      console.warn('Suppressed Extension context invalidated error');
-    }
-  });
 })();
