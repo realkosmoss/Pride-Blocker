@@ -1,16 +1,16 @@
 # Pride-Blocker
 
-A browser extension that lets you block pride-related content on websites.  
-Note: It’s still a work in progress and might not catch everything perfectly.
+A browser extension to block pride-related content on websites.  
+*Still a work in progress — might not catch everything.*
 
 ### Disclaimer
 
-This project is **not intended to promote hate, discrimination, or harassment** of any kind. It is a **personal content filter** for individuals who want more control over what they see online. Choosing to filter certain topics is a matter of **personal preference** — it’s not meant to target or silence anyone.
+This is a personal content filter made for people who want to decide what they see online. It’s not about hate or discrimination — just about personal preference. If you don’t want to see pride stuff on every site, this tool is for you.
 
-We respect the rights of everyone, including the LGBTQIA+ community. This tool does **not** support hate speech or harassment, and users should follow all laws and platform rules when using it.
+No hate, no harassment, no agenda. Just a simple way to filter what annoys me. If that upsets some people, that’s their problem — I’m not here to please everyone.
 
-This is simply a project about user choice and browsing control — nothing more.
+Use it responsibly and follow your local laws and platform rules.
 
 ## Inspiration
 
-I made this after visiting [perchance.org](https://perchance.org/welcome) and seeing some pride flags I personally didn’t care for. That’s all — just a small project to make my browsing experience more comfortable.
+I made this because I didn’t want pride flags constantly shoved in my face on unrelated sites. Simple as that.
