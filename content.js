@@ -116,8 +116,8 @@ function runFilter(root = document.body) {
         try {
           removeBlockedElements(document.body);
           censorBlockedText(document.body);
-        } catch (err) {
-          console.warn('Error running filter:', err);
+        } catch {
+          return;
         }
       }
     });
@@ -129,8 +129,8 @@ function runFilter(root = document.body) {
   try {
     removeBlockedElements(root);
     censorBlockedText(root);
-  } catch (err) {
-    console.warn('Error running filter:', err);
+  } catch {
+    return;
   }
 }
 
