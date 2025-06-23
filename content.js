@@ -105,22 +105,25 @@ function runFilter(root = document.body) {
   if (domain !== lastDomain) {
     lastDomain = domain;
 
-    chrome.storage.local.get('whitelistedSites', (result) => {
-      if (chrome.runtime.lastError || !isContextValid) {
-        return;
-      }
-      const list = result.whitelistedSites || [];
-      isWhitelisted = list.includes(domain);
-
-      if (!isWhitelisted && isContextValid && document.body) {
+    try {
+      chrome.storage.local.get('whitelistedSites', (result) => {
         try {
-          removeBlockedElements(document.body);
-          censorBlockedText(document.body);
-        } catch (err) {
-          console.warn('Error running filter:', err);
-        }
-      }
-    });
+          if (chrome.runtime.lastError || !isContextValid) {
+            return;
+          }
+          const list = result.whitelistedSites || [];
+          isWhitelisted = list.includes(domain);
+
+          if (!isWhitelisted && isContextValid && document.body) {
+            try {
+              removeBlockedElements(document.body);
+              censorBlockedText(document.body);
+            } catch {}
+          }
+        } catch {}
+      });
+    } catch {}
+
     return;
   }
 
@@ -129,9 +132,7 @@ function runFilter(root = document.body) {
   try {
     removeBlockedElements(root);
     censorBlockedText(root);
-  } catch (err) {
-    console.warn('Error running filter:', err);
-  }
+  } catch {}
 }
 
 const debouncedRunFilter = debounce(runFilter, 1500);
