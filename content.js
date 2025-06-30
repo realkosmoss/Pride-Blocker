@@ -33,6 +33,10 @@ function shouldRemove(el) {
     return true;
   }
 
+  if (tag === 'img' && el.alt && hasBlockedKeyword(el.alt)) {
+    return true;
+  }
+
   return false;
 }
 
