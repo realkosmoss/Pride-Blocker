@@ -4,7 +4,7 @@ const BLOCKED_KEYWORDS = [
   "pansexual", "asexual", "intersex", "genderfluid", "genderqueer", "agender",
   "bigender", "demiboy", "demigirl", "demisexual", "androgyne", "genderflux",
   "genderfae", "genderneutral", "neutrois", "omnisexual", "polysexual",
-  "skoliosexual", "sapiosexual"
+  "skoliosexual", "sapiosexual", "🏳️‍🌈"
 ];
 
 const SKIP_TAGS = new Set([
